@@ -2,9 +2,9 @@
 import { supabase } from "./config";
 import { Database } from "@/types/supabase";
 
-type User = Database["public"]["Tables"]["users"]["Row"];
+// type User = Database["public"]["Tables"]["users"]["Row"];
 type UserInsert = Database["public"]["Tables"]["users"]["Insert"];
-type UserUpdate = Database["public"]["Tables"]["users"]["Update"];
+// type UserUpdate = Database["public"]["Tables"]["users"]["Update"];
 
 // Tạo người dùng mới
 export const createUser = async (userData: UserInsert) => {
