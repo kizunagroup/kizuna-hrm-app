@@ -1,0 +1,77 @@
+**Bộ Tiêu Chuẩn Hoàn Chỉnh cho Supabase (Migrations & Edge Functions)**
+
+**I. Nguyên Tắc Chung (Áp dụng cho cả Migrations và Edge Functions):**
+
+*   **DRY (Don't Repeat Yourself):** Tránh lặp lại code, logic. Tái sử dụng các thành phần chung.
+*   **KISS (Keep It Simple, Stupid):** Ưu tiên sự đơn giản, dễ hiểu.
+*   **SOLID:** Áp dụng các nguyên tắc SOLID (Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion) khi thiết kế.
+*   **YAGNI (You Ain't Gonna Need It):** Không thêm tính năng "có thể cần" trong tương lai. Tập trung vào yêu cầu hiện tại.
+*   **Convention over Configuration:** Sử dụng các quy ước chung thay vì cấu hình phức tạp.
+*   **Security First:**  Bảo mật là ưu tiên hàng đầu.
+
+**II. Migrations:**
+
+1.  **Đặt Tên:**
+    *   **File:** `<timestamp>_<verb-ing>_<descriptive_name>.sql`
+        *   `timestamp`: Unix timestamp.
+        *   `verb-ing`: `creating_`, `adding_`, `modifying_`, `removing_`.
+        *   `descriptive_name`: Mô tả *chi tiết, có ngữ cảnh*.
+    *   **Bảng, Cột:** `snake_case`.
+    *   **Hàm:** `snake_case`.
+    *   **Trigger:** `trg_<table_name>_<before|after>_<action>`.
+    *  **Chia nhỏ:** Các thay đổi lớn -> nhiều migrations nhỏ.
+
+2.  **Quản Lý:**
+    *   **Công Cụ:** Supabase CLI (hoặc Flyway, Liquibase).
+    *   **Version Control:** Git, mỗi migration một branch.
+    *   **Môi Trường:** Local -> Dev/Staging -> Production (không chạy trực tiếp trên production lần đầu).
+    *   **Backup:** Luôn backup trước khi chạy.
+    *   **Tài Liệu (bên ngoài file SQL):** Mục đích, ảnh hưởng, lưu ý, rollback, dependencies.
+
+3.  **Viết Code:**
+    *   **Transaction:** `BEGIN;` ... `COMMIT;`.
+    *   **Kiểm Tra Tồn Tại:** `IF NOT EXISTS` (tạo), `IF EXISTS` (xóa).
+    *   **Schema:** Sử dụng schema để tổ chức.
+    *   **Rollback:** *Mỗi* migration *phải có* rollback (`DOWN` block).
+    *   **Idempotency:** Chạy lại nhiều lần không lỗi.
+    *   **Data Migration:** Cẩn thận, chia batch (nếu cần), kiểm tra kỹ, rollback (nếu có thể).
+    * **Comment:** Chỉ comment phần *thực sự* phức tạp.
+    * **Tránh DDL trong thủ tục.**
+
+**III. Edge Functions:**
+
+1.  **Đặt Tên:**
+    *   **Hàm:** `động_từ + danh_từ` (ví dụ: `getUser`, `createPost`).  Tránh tên chung chung.
+    *   **Biến:** `camelCase`.
+    *   **File:** `kebab-case` (ví dụ: `get-user.ts`, `create-post.ts`).
+        *   Tổ chức thư mục nếu nhiều file liên quan (ví dụ: `users/get.ts`, `posts/create.ts`).
+
+2.  **Quản Lý:**
+    *   **Version Control:** Git, branch riêng cho mỗi tính năng.
+    *   **Môi Trường:** Tách biệt Dev/Production. Dùng biến môi trường (environment variables).
+    *   **Testing:**
+        *   Unit tests cho các hàm nhỏ.
+        *   Integration tests cho tương tác với DB/dịch vụ.
+        *   Công cụ: Jest, Mocha.
+
+3.  **Viết Code:**
+    *   **Modularization:** Chia nhỏ code, hàm độc lập, modules.
+    *   **Error Handling:** Xử lý lỗi rõ ràng, mã trạng thái HTTP phù hợp, ghi log chi tiết.
+    *   **Performance:** Tối ưu, `async/await` cho tác vụ bất đồng bộ.
+    *   **Security:** Chống SQL injection (parameterized queries/ORM), xác thực/phân quyền.
+    *   **Documentation:** Tài liệu cho mỗi hàm (mô tả, tham số, giá trị trả về). Dùng JSDoc.
+    *   **Input Validation**: Luôn kiểm tra và validate dữ liệu đầu vào.
+
+4.  **Triển Khai:**
+    *   **CI/CD:** Tự động build, test, deploy.
+    *   **Monitoring:** Theo dõi hiệu suất, lỗi sau triển khai (Supabase Logs, công cụ khác).
+
+5.  **Bảo Trì & Mở Rộng:**
+    *   **Refactoring:** Cải thiện code định kỳ.
+    *   **Scalability:** Thiết kế dễ mở rộng (caching, ...).
+
+**IV. Lưu ý:**
+
+*   Đây là *hướng dẫn*, điều chỉnh theo dự án.
+*   Ưu tiên *nhất quán* trong toàn bộ dự án.
+*   Đội ngũ thống nhất và tuân thủ.

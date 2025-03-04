@@ -1,0 +1,284 @@
+**RULES TRIỂN KHAI KIZUNA HRM**
+
+**1. MỤC TIÊU**
+
+Xây dựng hệ thống quản lý nhân sự Kizuna HRM với các tiêu chí:
+
+- **Hiệu suất cao:** Tối ưu hóa rendering và data fetching.
+- **Bảo mật:** Xác thực và phân quyền chặt chẽ, bảo vệ dữ liệu người dùng.
+- **Dễ bảo trì và mở rộng:** Kiến trúc module, code rõ ràng, dễ đọc, tuân thủ các tiêu chuẩn.
+- **Trải nghiệm người dùng tốt:** Giao diện nhất quán, thân thiện, dễ sử dụng, đáp ứng trên nhiều thiết bị.
+- **Chi phí hợp lý:** Tối ưu hóa tài nguyên và chi phí vận hành.
+
+**2. CÔNG NGHỆ VÀ KIẾN TRÚC**
+
+| Thành phần           | Công nghệ                              | Lý do chọn                                                                                                                                                                                                                                                                   |
+| -------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Frontend**         | Vite + React + TypeScript + Shadcn/ui  | **Vite:** Build tool nhanh, hỗ trợ hot module replacement (HMR). **React:** Thư viện UI phổ biến, cộng đồng lớn, nhiều tài liệu. **TypeScript:** Tăng cường an toàn kiểu, giảm lỗi runtime. **Shadcn/ui:** UI components đẹp, nhất quán, dễ tùy chỉnh, hỗ trợ accessibility. |
+| **State Management** | Zustand                                | Đơn giản, dễ sử dụng, hiệu suất tốt, tích hợp tốt với React.                                                                                                                                                                                                                 |
+| **Data Fetching**    | TanStack React Query                   | Quản lý cache, optimistic updates, prefetching, giảm thiểu số lần gọi API, cải thiện trải nghiệm người dùng.                                                                                                                                                                 |
+| **Authentication**   | Supabase Auth                          | Tích hợp sẵn với Supabase database, cung cấp các tính năng xác thực phổ biến (email/password, social login, OTP), dễ triển khai và quản lý.                                                                                                                                  |
+| **Database**         | Supabase (PostgreSQL)                  | Cung cấp đầy đủ các tính năng của PostgreSQL, dễ dàng mở rộng, tích hợp tốt với Supabase Auth và các dịch vụ khác của Supabase.                                                                                                                                              |
+| **API Layer**        | Supabase Edge Functions (Deno)         | Tận dụng edge computing, giảm độ trễ, tăng tốc độ phản hồi, dễ dàng tạo các API endpoints, hỗ trợ middleware. Chạy trên Deno runtime, bảo mật và hiệu suất.                                                                                                                  |
+| **Form Handling**    | React Hook Form + Zod                  | **React Hook Form:** Quản lý form state, validation, submission, hiệu suất cao. **Zod:** Schema validation mạnh mẽ, đảm bảo dữ liệu đầu vào hợp lệ.                                                                                                                          |
+| **Hosting**          | Cloudflare Pages                       | Dễ dàng deploy frontend, tích hợp sẵn với Supabase.                                                                                                                                                                                                                          |
+| **PWA Support**      | `vite-plugin-pwa`                      | Cung cấp trải nghiệm offline, thông báo đẩy, cải thiện hiệu suất trên thiết bị di động.                                                                                                                                                                                      |
+| **Kiến trúc**        | Microservices (trong phạm vi Supabase) | Tách biệt các chức năng thành các Edge Functions độc lập, dễ bảo trì và mở rộng.                                                                                                                                                                                             |
+
+**3. NGUYÊN TẮC THIẾT KẾ VÀ XÂY DỰNG**
+
+- **Kiến trúc:**
+  - **Đơn giản hóa:** Ưu tiên các giải pháp đơn giản, dễ hiểu, dễ bảo trì.
+  - **Edge-first:** Tận dụng tối đa lợi thế của edge computing (Supabase Edge Functions).
+  - **Microservices:** Phân chia các chức năng thành các Edge Functions độc lập.
+  - **Modular:** Phân chia ứng dụng thành các modules độc lập, dễ dàng tái sử dụng và mở rộng.
+  - **Separation of Concerns:** Tách biệt rõ ràng giữa UI (presentation) và logic (container components, service layer).
+
+- **UI/UX:**
+
+  - **Nhất quán (Consistency):** Sử dụng Shadcn/ui để đảm bảo giao diện nhất quán trên toàn hệ thống.
+  - **Khả năng truy cập (Accessibility):** Tuân thủ WCAG 2.1 AA, đảm bảo ứng dụng có thể sử dụng được bởi mọi người.
+  - **Đáp ứng (Responsive Design):** Thiết kế giao diện tương thích với mọi kích thước màn hình và thiết bị.
+  - **Progressive Enhancement:** Cung cấp trải nghiệm cơ bản trước, sau đó nâng cao dần.
+  - **Chỉ sử dụng Light Mode:** Hệ thống sẽ chỉ có giao diện nền sáng, không hỗ trợ dark mode để đảm bảo tính nhất quán và phù hợp với nhận diện thương hiệu.
+  - **Logo**: `https://kizuna.com.vn/content//themes/kizuna/dist/img/logo_kizuna.svg`.
+  - **Favication**: `https://kizuna.com.vn/media/favicon-96x96.png`.
+  - **Typography:** Sử dụng Google Fonts đảm bảo hỗ trợ tiếng Việt và hiển thị tốt trên nhiều thiết bị:
+
+    - **Font chính cho tiêu đề (Headings):** Be Vietnam Pro
+
+      - Là font được thiết kế đặc biệt cho tiếng Việt
+      - Trọng lượng sử dụng: 600 (Semi-bold) cho tiêu đề chính, 500 (Medium) cho tiêu đề phụ
+      - Hiện đại, chuyên nghiệp và thân thiện
+
+    - **Font phụ cho nội dung (Body):** Inter
+
+      - Hỗ trợ tiếng Việt tốt, dễ đọc trên mọi kích thước màn hình
+      - Trọng lượng sử dụng: 400 (Regular) cho văn bản thông thường, 500 (Medium) cho nhấn mạnh
+      - Tỷ lệ cao, đọc rõ ràng trên cả thiết bị di động
+
+    - **Fallback fonts:**
+      - `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif`
+      - Đảm bảo trải nghiệm nhất quán trên mọi thiết bị nếu Google Fonts không tải được.
+      - Áp dụng font trong CSS/Tailwind cho các phần tử tương ứng:
+        ```css
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          font-family: "Be Vietnam Pro", sans-serif;
+        }
+        body,
+        p,
+        input,
+        button,
+        select,
+        textarea {
+          font-family: "Inter", sans-serif;
+        }
+        ```
+      - **Kích thước font:**
+        - Tiêu đề h1: 2rem (32px)
+        - Tiêu đề h2: 1.5rem (24px)
+        - Tiêu đề h3: 1.25rem (20px)
+        - Tiêu đề h4-h6: 1rem-1.125rem (16-18px)
+        - Nội dung: 0.875rem-1rem (14-16px)
+        - Text nhỏ: 0.75rem (12px)
+
+  - **Theme và bảng màu:** Kizuna HRM sử dụng theme light với bảng màu chủ đạo sau:
+
+    - **Màu chính (Primary):** #ffcc00 (Vàng)
+
+      - Sử dụng cho: Nút chính (primary buttons), thanh điều hướng, các yếu tố nhấn mạnh, biểu tượng quan trọng
+      - Các biến thể:
+        - Nhạt hơn: #ffdb4d (hover states)
+        - Đậm hơn: #e6b800 (active states)
+
+    - **Màu thứ cấp (Secondary):** #442d21 (Nâu đen)
+
+      - Sử dụng cho: Văn bản, tiêu đề, nút thứ cấp, biểu tượng phụ
+      - Các biến thể:
+        - Nhạt hơn: #6b4936 (hover states)
+        - Đậm hơn: #2e1f17 (active states, text)
+
+    - **Màu nền và trung tính (Background & Neutral):**
+
+      - Nền chính: #ffffff (White)
+      - Nền phụ: #f5f5f5, #e9e9e9 (Light Gray)
+      - Đường viền: #d1d1d1 (Medium Gray)
+      - Văn bản phụ, disabled: #8a8a8a (Dark Gray)
+
+    - **Màu thông báo (Alerts):**
+
+      - Thành công (Success): #28a745
+      - Cảnh báo (Warning): #ffcc00 (trùng với màu chính)
+      - Lỗi (Error): #dc3545
+      - Thông tin (Info): #17a2b8
+
+    - **Hướng dẫn triển khai:**
+
+      - Cấu hình Shadcn/ui để sử dụng bảng màu này
+      - Áp dụng nhất quán trong toàn bộ ứng dụng
+      - Đảm bảo độ tương phản đủ theo tiêu chuẩn WCAG (ít nhất 4.5:1 cho văn bản thông thường)
+
+    - **Nguyên tắc áp dụng:**
+
+      - **Nhấn mạnh thương hiệu**: Sử dụng màu vàng (#ffcc00) làm điểm nhấn chính trong giao diện.
+      - **Tính chuyên nghiệp**: Màu nâu đen (#442d21) mang đến sự nghiêm túc, chuyên nghiệp.
+      - **Dễ đọc**: Đảm bảo độ tương phản cao giữa văn bản và nền.
+      - **Tính nhất quán**: Sử dụng nhất quán bảng màu xuyên suốt ứng dụng.
+      - **Tiết chế**: Hạn chế số lượng màu sắc để tránh rối mắt, ưu tiên không gian trắng.
+
+    - **Ứng dụng cụ thể:**
+      - Thanh điều hướng (Navbar): Nền trắng (#ffffff), logo và các icon sử dụng màu vàng (#ffcc00)
+      - Nút chính (Primary buttons): Nền vàng (#ffcc00), chữ nâu đen (#442d21)
+      - Nút thứ cấp (Secondary buttons): Viền nâu đen (#442d21), nền trắng (#ffffff), chữ nâu đen (#442d21)
+      - Bảng (Tables): Header sử dụng màu nền nhạt (#f5f5f5), viền nhẹ (#d1d1d1)
+      - Forms: Labels sử dụng màu nâu đen (#442d21), input focus có viền vàng (#ffcc00)
+
+**4. QUẢN LÝ MÃ NGUỒN**
+
+- **Quy ước đặt tên:**
+
+  - **Components:** `PascalCase` (ví dụ: `UserProfileCard.tsx`)
+  - **Hooks:** `camelCase` với tiền tố "use" (ví dụ: `useUserData.ts`)
+  - **Utilities:** `camelCase` (ví dụ: `formatDate.ts`)
+  - **Constants:** `UPPER_SNAKE_CASE` (ví dụ: `API_BASE_URL.ts`)
+  - **Files/Folders:** Module-based với các thư mục con theo tính năng.
+  - **Edge Functions:** `snake_case` (ví dụ: `create_employee.ts`)
+
+- **Cấu trúc thư mục:**
+
+  ```
+  src/
+    ├── assets/
+    ├── components/
+    │   ├── ui/
+    │   └── shared/
+    ├── hooks/
+    ├── lib/
+    ├── modules/
+    │   ├── auth/
+    │   │   ├── components/
+    │   │   ├── hooks/
+    │   │   ├── api.ts  # Gọi Supabase Auth (client-side)
+    │   │   ├── types.ts
+    │   │   └── service.ts  # Xử lý logic trung gian
+    │   ├── employees/
+    │   │   ├── components/
+    │   │   ├── hooks/
+    │   │   ├── api.ts # Gọi Supabase Edge Functions
+    │   │   ├── types.ts
+    │   │   └── service.ts
+    │   ├── departments/
+    │    ├── ...
+    │   ├── jobTitles/
+    │    ├── ...
+    │   ├── roles/
+    │   │   └── ...
+    │   └── userRoles/
+    │       └── ...
+    ├── stores/
+    ├── types/
+    └── utils/
+  supabase/  # Thư mục của Supabase CLI
+      ├── migrations/ # Database migrations
+      └── functions/  # Supabase Edge Functions
+          ├── _shared/ # code dùng chung các functions
+          ├── create_employee/
+          │   └── index.ts
+          ├── update_employee/
+          │   └── index.ts
+          ├── ...
+          └── utils.ts # functions hỗ trợ
+  ```
+
+- **Quy ước commit:**
+
+  - **Format:** `<type>(<scope>): <description>`
+  - **Types:** `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`
+  - **Scope:** `auth`, `employees`, `ui`, `api`, `deps`, `supabase`, ...
+  - **Ví dụ:** `feat(auth): add social login with Google`
+
+**5. TIÊU CHUẨN PHÁT TRIỂN**
+
+- **Tiêu chuẩn mã nguồn:**
+
+  - **Linting:** ESLint với các rules chặt chẽ.
+  - **Formatting:** Prettier với các quy ước nhất quán.
+  - **Type Safety:** Sử dụng TypeScript với chế độ `strict`.
+  - **Testing:**
+    - **Unit tests:** Jest, React Testing Library.
+    - **Integration tests:** Jest, React Testing Library, `msw` (Mock Service Worker).
+    - **End-to-end (E2E) tests:** Cypress, Playwright.
+
+- **Tiêu chuẩn bảo mật:**
+
+  - **Authentication:** Sử dụng Supabase Auth (JWT).
+  - **Authorization:** Kết hợp RLS của Supabase và custom policies (trong Edge Functions, nếu cần).
+  - **Input Validation:** Sử dụng Zod để validate tất cả dữ liệu đầu vào (cả client và server).
+  - **HTTPS:** Bắt buộc sử dụng HTTPS.
+  - **CSP (Content Security Policy):** Cấu hình CSP.
+  - **CSRF Protection** Sử dụng các cơ chế chống CSRF.
+
+- **Tiêu chuẩn hiệu suất:**
+  - **Lighthouse Score:** Đạt điểm cao.
+  - **Bundle Size:** Giữ kích thước bundle nhỏ.
+  - **Time to Interactive (TTI):** Tối ưu hóa.
+  - **Lazy Loading:** Sử dụng.
+  - **Code Splitting:** Sử dụng.
+  - **CDN:** Sử dụng (Cloudflare).
+
+**6. DOCUMENTATION**
+
+- **API Documentation:** Sử dụng OpenAPI (Swagger) - có thể tích hợp với Supabase.
+- **Component Documentation:** Sử dụng Storybook.
+- **Inline Documentation:** Sử dụng JSDoc.
+- **README:** Hướng dẫn chi tiết.
+- **Language:** Tiếng việt.
+
+**7. BEST PRACTICES**
+
+- **Code Splitting:** Sử dụng.
+- **Tree Shaking:** Sử dụng.
+- **Image Optimization:** Sử dụng.
+- **Caching:** Sử dụng (TanStack Query, Supabase caching).
+- **Prefetching:** Sử dụng (TanStack Query).
+- **Debouncing and Throttling:** Sử dụng.
+- **Error Handling:** Xử lý lỗi nhất quán, thông báo lỗi rõ ràng.
+- **Monitoring and Logging:** Sử dụng Supabase logging, có thể tích hợp với các công cụ monitoring bên ngoài.
+- **Sử dụng Supabase CLI:** Cho phép quản lý database migrations, Edge Functions, local development.
+
+**8. LỘ TRÌNH TRIỂN KHAI**
+
+1.  **Setup môi trường phát triển:** Cài đặt Node.js, npm, Git, IDE, Supabase CLI.
+2.  **Khởi tạo dự án:**
+    - Frontend: `npx create-vite@latest kizuna-hrm --template react-ts`
+    - Supabase: `supabase init`
+3.  **Cài đặt các thư viện:** `npm install @supabase/supabase-js @tanstack/react-query zustand react-hook-form zod shadcn-ui ...`
+4.  **Thiết lập cấu trúc thư mục:** (Như mục 4)
+5.  **Cấu hình ESLint, Prettier, TypeScript:** (Như hướng dẫn trước)
+6.  **Xây dựng UI components cơ bản:** (Shadcn/ui)
+7.  **Thiết lập authentication (Supabase Auth):**
+    - Trong `lib/supabase.ts`, khởi tạo Supabase client.
+    - Trong `modules/auth/api.ts`, tạo các hàm gọi Supabase Auth (client-side: `signInWithPassword`, `signUp`, `signOut`, ...).
+    - Trong `modules/auth/service.ts`, xử lý logic (ví dụ: chuyển đổi employee ID thành email).
+8.  **Thiết lập database (Supabase - PostgreSQL):**
+    - Tạo file `supabase/migrations/20231027000000_initial_schema.sql` (ví dụ).
+    - Dán cấu trúc SQL từ tài liệu đã cung cấp trước (cấu trúc "lai").
+    - Chạy `supabase db push` để apply migrations.
+    - Thiết lập RLS policies (trong file SQL hoặc qua Supabase dashboard).
+9.  **Xây dựng API layer (Supabase Edge Functions):**
+    - Tạo các thư mục và file cho Edge Functions trong `supabase/functions`. Ví dụ: `supabase/functions/create_employee/index.ts`.
+    - Sử dụng Deno và các thư viện của Supabase để viết logic (tương tác với database, xử lý request/response).
+    - Deploy Edge Functions: `supabase functions deploy`.
+10. **Kết nối frontend với backend:**
+    - Trong `modules/employees/api.ts`, tạo các hàm gọi Supabase Edge Functions (sử dụng `fetch`).
+    - Trong `modules/employees/service.ts`, xử lý logic, gọi các hàm trong `api.ts`.
+    - Sử dụng TanStack Query để gọi các hàm trong `service.ts` từ components.
+11. **Xây dựng các tính năng:** Phát triển theo từng module.
+12. **Kiểm thử:** Unit tests, integration tests, E2E tests.
+13. **Optimize:** Tối ưu hiệu suất, bundle size, Lighthouse score.
+14. **Viết documentation:** Ghi lại tài liệu.
